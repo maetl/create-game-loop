@@ -1,0 +1,38 @@
+{
+  "bindings": {
+    "src": {
+      "game": "stone-giant.js"
+    }
+  },
+  "engine": {
+    "programmingStyle": "mixed",
+    "updateStrategy": "priority-turn",
+    "templates": {
+      "src": [
+        "actions.js",
+        "effects.js",
+        "entities.js",
+        "fov.js",
+        "game.js",
+        "grid.js",
+        "index.html",
+        "init.js",
+        "input.js",
+        "inventory.js",
+        "items.js",
+        "main.js",
+        "mobs.js",
+        "pathfinding.js",
+        "player.js",
+        "render.js",
+        "stage.js",
+        "update.js"
+      ]
+    },
+    "style": "mixed",
+    "standard": "maetl-example"
+  },
+  "dependencies": {
+    "overprint": "@latest"
+  }
+}

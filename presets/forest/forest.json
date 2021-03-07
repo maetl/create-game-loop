@@ -1,0 +1,27 @@
+{
+  "game": {
+    "templates": {
+      "src": [
+        "woodland"
+      ],
+    }
+  },
+  "engine": {
+    "supports-tests": false,
+    "action-loop": "energy-turn",
+    "templates": {
+      "src": [
+        "game",
+        "index",
+        "input",
+        "main",
+        "update"
+      ]
+    },
+    "style": "min",
+    "standard": "maetl-example"
+  },
+  "dependencies": {
+    "overprint": "@latest"
+  }
+}

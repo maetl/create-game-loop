@@ -1,0 +1,188 @@
+<html>
+<head>
+<meta http-equiv="content-type" charset="utf-8">
+<style type="text/css">
+</style>
+</head>
+<body>
+<header>
+  <p>Eyeful of bowls he bowls them</p>
+</header>
+<div id="map"><canvas id="demo"></canvas></div>
+<script src="./overprint.js"></script>
+<script>
+var Overprint = overprint;
+var canvas = document.getElementById("demo");
+canvas.style.width = document.documentElement.clientWidth;
+canvas.style.height = document.documentElement.clientHeight;
+canvas.style.margin = '0px';
+canvas.style.padding = '0px';
+document.body.style.margin = '0px';
+document.body.style.padding = '0px';
+//document.body.style.backgroundColor = '#000';
+
+const width = 40;
+const height = 30;
+const player = { x: Math.floor(width / 2), y: Math.floor(height / 2) }
+const font = Overprint.Font("Menlo", "normal", 22);
+const terminal = new Overprint.Terminal(width, height, canvas, font, false, true);
+
+let action = null;
+
+const mobs = [];
+const cleanupMobs = [];
+const effects = [];
+
+
+
+function moveToLocation(mob, pos) {
+  mob.x = pos.x;
+  mob.y = pos.y;
+}
+
+function sense(mob) {
+  if (mob.health <= 0) {
+    return {
+      mob: mob,
+      move: "die"
+    }
+  }
+
+  for (const other of mobs) {
+    if (!mob || !other) continue;
+    if (other.faction != mob.faction && !other.isDead) {
+      if (manhattanDistance({x: mob.x, y: mob.y}, {x: other.x, y: other.y}) < 10) {
+        if (mob.health > 5) {
+          return {
+            mob: mob,
+            move: "attack",
+            target: other
+          }
+        } else {
+          return {
+            mob: mob,
+            move: "flee",
+            target: other
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    mob: mob,
+    move: "wander"
+  }
+}
+
+function wander(mob) {
+  const possibleMoves = getWalkablePositions(mob);
+  if (possibleMoves.length == 0) {
+    console.log("Cannot move")
+    return;
+  }
+  const index = Math.floor(Math.random() * possibleMoves.length);
+  moveToLocation(mob, possibleMoves[index]);
+}
+
+
+
+const Weapons = {
+  bow: { range: 6, damage: 3 },
+  pistol: { range: 10, damage: 4 }
+}
+
+function attack(decision) {
+  console.log("attack vs " + decision.target.faction);
+
+  const path = interpolateLine({x: decision.mob.x, y: decision.mob.y}, {x: decision.target.x, y: decision.target.y});
+  const weapon = Weapons[decision.mob.weapon];
+
+  if (path.length < weapon.range) {
+    console.log("firing " + decision.mob.weapon);
+    decision.target.health -= weapon.damage;
+    if (decision.mob.weapon == "pistol") {
+      spawnProjectile(path, Tiles.Bullet);
+    } else {
+      spawnProjectile(path, Tiles.Arrow);
+    }
+  } else {
+    console.log("moving closer")
+    decision.mob.x = path[1].x;
+    decision.mob.y = path[1].y;
+  }
+}
+
+function die(mob) {
+  mob.isDead = true;
+  cleanupMobs.push(mob);
+  spawnDeath({x: mob.x, y: mob.y});
+}
+
+function respond(decision) {
+  switch (decision.move) {
+    case "die":
+      die(decision.mob);
+    break;
+
+    case "wander":
+      wander(decision.mob);
+    break;
+
+    case "attack":
+      attack(decision);
+    break;
+  }
+}
+
+function makeTile(glyph, color, bgColor) {
+  return Overprint.Glyph(glyph, color, bgColor);
+}
+
+const Tiles = {
+  Player: Overprint.Glyph("@", "#fff", "#000"),
+  Floor: Overprint.Glyph(".", "#aaa", "#000"),
+  Hidden: Overprint.Glyph(" ", "#000", "#000"),
+  Steel: Overprint.Glyph("s", "#B0C4DE", "#000"),
+  Coral: Overprint.Glyph("c", "#F08080", "#000"),
+  Gunslinger: Overprint.Glyph("g", "#f4df42", "#000"),
+  Wall: Overprint.Glyph("#", "#ddd", "#000"),
+  Bullet: Overprint.Glyph("•", "#f00", "#000"),
+  Arrow: Overprint.Glyph("+", "#980", "#000"),
+  Splat: Overprint.Glyph("*", "#fff", "#f00")
+}
+
+const map = Array(width * height);
+
+
+
+computeFov();
+
+
+
+
+
+
+
+function gameLoop() {
+  update();
+  render();
+  requestAnimationFrame(gameLoop);
+}
+
+function input(keyCode) {
+  switch(keyCode) {
+    case 37: action = [-1, 0]; break;
+    case 38: action = [0, -1]; break;
+    case 39: action = [1, 0]; break;
+    case 40: action = [0, 1]; break;
+    case 90: action = [0, 1]; break;
+  }
+}
+
+document.addEventListener("keydown", (ev) => input(ev.which));
+window.requestAnimationFrame(gameLoop);
+
+</script>
+</body>
+</html>

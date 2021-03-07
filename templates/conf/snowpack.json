@@ -1,0 +1,9 @@
+{
+  "mount": {
+    "src": "/",
+    "ui": "/ui"
+  },
+  "buildOptions": {
+    "out": "dist"
+  }
+}

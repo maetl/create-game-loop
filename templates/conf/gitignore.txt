@@ -1,0 +1,8 @@
+# System crap
+.DS_Store
+Thumbs.db
+
+# NPM related
+node_modules/
+npm-debug.log*
+.npm
