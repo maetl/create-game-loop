@@ -17,7 +17,7 @@ class Preset {
   }
 
   presetPath() {
-    return path.resolve(this.directoryPath, `${this.label}.json`);
+    return path.resolve(this.directoryPath(), `${this.label}.json`);
   }
 
   contentTemplates() {
