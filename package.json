@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Generate a kitset game loop from zero build configuration",
   "main": "generator.js",
-  "bin": "./script.js",
+  "bin": {
+    "create-game-loop": "./bin.js"
+  },
   "scripts": {
     "test": "ava"
   },

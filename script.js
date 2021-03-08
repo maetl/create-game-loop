@@ -52,7 +52,6 @@ class Script {
   }
 }
 
-console.log("Hello from JS create-game-loop");
-
-const script = new Script();
-script.run();
+module.exports = {
+  Script
+}
