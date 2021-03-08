@@ -1,6 +1,6 @@
 {
   "name": "create-game-loop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate a kitset game loop from zero build configuration",
   "main": "generator.js",
   "bin": {
