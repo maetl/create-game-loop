@@ -13,7 +13,7 @@ class Preset {
   }
 
   directoryPath() {
-    return path.resolve(__dirname, `./presets/${this.label}`);
+    return path.resolve(__dirname, `presets/${this.label}`);
   }
 
   presetPath() {
