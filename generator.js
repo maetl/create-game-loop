@@ -102,7 +102,7 @@ class Generator {
   processNpm() {
     writeFileSync(
       path.resolve(this.project.directory, "package.json"),
-      JSON.stringify(this.package.definition, null, 2)
+      `${JSON.stringify(this.package.definition, null, 2)}\n`
     );
 
     if (this.installNodeModules) {
