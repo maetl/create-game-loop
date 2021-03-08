@@ -8,22 +8,21 @@ class Preset {
     if (existsSync(this.presetPath())) {
       this.definition = require(this.presetPath());
     } else {
-      console.log(this.presetPath());
       throw new Error(`Unknown preset: ${label}`);
     }
   }
 
   directoryPath() {
-    return path.resolve(__dirname, `./presets/${this.label}/${this.label}.json`);
+    return path.resolve(__dirname, `./presets/${this.label}`);
   }
 
   presetPath() {
-    return path.resolve(__dirname, `./presets/${this.label}/${this.label}.json`);
+    return path.resolve(this.directoryPath, `${this.label}.json`);
   }
 
   contentTemplates() {
     if (!this.contentTemplateNames) {
-      this.contentTemplateNames = readdirSync(`./presets/${this.label}/`).filter(file => (
+      this.contentTemplateNames = readdirSync(this.directoryPath()).filter(file => (
         file.endsWith(".tpl")
       )).map(file => file.replace(".tpl", ""));
     }
