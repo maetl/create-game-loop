@@ -1,3 +1,4 @@
+const path = require("path");
 const { existsSync, readdirSync } = require("fs");
 
 class Preset {
@@ -7,16 +8,17 @@ class Preset {
     if (existsSync(this.presetPath())) {
       this.definition = require(this.presetPath());
     } else {
+      console.log(this.presetPath());
       throw new Error(`Unknown preset: ${label}`);
     }
   }
 
   directoryPath() {
-    return `./presets/${this.label}/${this.label}.json`;
+    return path.resolve(__dirname, `./presets/${this.label}/${this.label}.json`);
   }
 
   presetPath() {
-    return `./presets/${this.label}/${this.label}.json`;
+    return path.resolve(__dirname, `./presets/${this.label}/${this.label}.json`);
   }
 
   contentTemplates() {
