@@ -39,8 +39,6 @@ class Script {
 
         const chosenOpts = { ...this.opts, ...providedConfig }
 
-        console.log(chosenOpts)
-
         this.generator = new Generator(this.basename, this.directory, chosenOpts);
 
         prelude.confirmConfig(this.generator.package.definition, confirm => {

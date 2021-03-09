@@ -37,6 +37,20 @@ cd example-rl
 
 The optional argument to the command specifies a new root directory for your project. If not provided, the game files are created in the current working directory.
 
+### Skip Interactive Prompt
+
+To generate a project directly from provided options and best-guess defaults without stepping through the interactive prompt, pass `-y` or `--yes` to the command.
+
+```
+npm init game-loop -y
+```
+
+Or:
+
+```
+create-game-loop -y
+```
+
 ## Presets Library
 
 Available presets:
