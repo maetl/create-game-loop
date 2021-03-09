@@ -12,7 +12,6 @@ test("generator requirements", t => {
   });
   t.is(generator.project.basename, "coolrl");
   t.is(generator.project.directory, "/usr/local/coolrl");
-	t.true(generator.skipInteractive);
 	t.true(generator.initializeGitRepo);
 	t.false(generator.installNodeModules);
 	t.is(generator.preset.label, "caves");

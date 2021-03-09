@@ -13,6 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^7.1.0",
+    "ini": "^2.0.0",
+    "inquirer": "^8.0.0",
     "liquidjs": "^9.23.1"
   },
   "devDependencies": {

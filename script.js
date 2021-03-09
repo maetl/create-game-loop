@@ -1,5 +1,7 @@
 const path = require("path");
 const { Command } = require("commander");
+const inquirer = require('inquirer');
+const { Prelude } = require("./prelude");
 const { Generator } = require("./generator");
 
 class Script {
@@ -12,37 +14,50 @@ class Script {
     this.command.option("-y, --yes", "Skip interactive prompt?", false);
     this.command.option("-r, --repo", "Initialize Git repository?", false);
     this.command.option("-t, --preset [label]", "Software design convention", "caves");
-    this.command.option("-s, --standard", "Formatting standard", "maetl-example");
-    this.command.option("-d --style", "Software design convention", "oo-entities");
     this.command.option("-p --public", "Open source package", false);
+    this.command.option("-s --semvar [number]", "Semantic version (public only)");
+    this.command.option("-l --license [spdx-id]", "OSS license (public only)");
     this.command.option("-i --install", "Install node modules", false);
-    this.command.action(argname => {
-      this.basename = argname;
-      this.directory = path.resolve(process.env.PWD, argname);
-      // inquirer.prompt([{
-      //   {type: "input", name: "basename", "package name:"},
-      //   {type: "input", name: "version", "version:"},
-      //   {type: "input", name: "description", "description:"},
-      //   {type: "input", name: "keywords", "description:"},
-      // ]);
-      // this.generator = new Generator(
-      //   this.basename,
-      //   this.directory,
-      //   this.command.opts()
-      // );
-      // About to write:
-      // console.log(this.generator.package.definition);
-      // Is this OK? (yes/no)
-    });
   }
 
   run() {
+    this.command.action(argname => {
+      this.opts = this.command.opts();
+
+      const prelude = new Prelude(this.opts);
+
+      if (argname && argname !== ".") {
+        this.basename = argname;
+        this.directory = path.resolve(process.env.PWD, argname);
+      } else {
+        prelude.askForBasename(this.basename);
+      }
+
+      prelude.askForDescription(`generated at ${new Date().toISOString()}`);
+
+      prelude.inputConfig(providedConfig => {
+
+        const chosenOpts = { ...this.opts, ...providedConfig }
+
+        console.log(chosenOpts)
+
+        this.generator = new Generator(this.basename, this.directory, chosenOpts);
+
+        prelude.confirmConfig(this.generator.package.definition, confirm => {
+          if (confirm.willInstall) {
+            this.runGenerator();
+          } else {
+            console.log("Cancelled...");
+            process.exit();
+          }
+        });
+      });
+    });
+
     this.command.parse();
-    this.generator = new Generator(
-      this.basename,
-      this.directory,
-      this.command.opts()
-    );
+  }
+
+  runGenerator(opts) {
     this.generator.processSource();
     this.generator.processConf();
     this.generator.processGit();

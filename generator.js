@@ -11,13 +11,12 @@ const { Style } = require("./style");
 class Generator {
   constructor(basename, directory, opts) {
     this.project = new Project(basename, directory);
-    this.skipInteractive = opts.yes;
     this.initializeGitRepo = opts.repo;
     this.installNodeModules = opts.install;
     this.preset = new Preset(opts.preset);
     this.standard = new Standard(opts.standard);
     this.style = new Style(opts.style);
-    this.package = new Package(basename, opts.public, this.preset.dependencies);
+    this.package = new Package(basename, opts, this.preset.dependencies());
   }
 
   ensureDirectories() {
@@ -65,7 +64,7 @@ class Generator {
 
     if (devDependencies.hasOwnProperty("snowpack")) {
       const snowpackConf = require(path.resolve(__dirname, "templates/conf/snowpack.json"));
-      console.log(snowpackConf)
+
       // TODO: set output directory to user-defined preference, public, web, www, dist
       // snowpackConf.buildOptions.out = "web"
       writeFileSync(
